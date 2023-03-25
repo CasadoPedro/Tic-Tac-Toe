@@ -1,5 +1,5 @@
 const gameBoard = (() => {
-  const board = ["", "", "", "", "", "", "", "", ""];
+  let board = ["", "", "", "", "", "", "", "", ""];
   const checkAvaiableCell = (numberOfCell) => {
     if (board[numberOfCell] === "") return "avaiable";
     else return "unavaiable";
@@ -11,9 +11,35 @@ const gameBoard = (() => {
       return "validTurn";
     } else return "occupied";
   };
-  return { changeBoard };
+  const checkGameWinner = () => {
+    if (board[0] == board[1] && board[0] == board[2] && board[0] != "")
+      return "gameOver";
+    if (board[3] == board[4] && board[3] == board[5] && board[3] != "")
+      return "gameOver";
+    if (board[6] == board[7] && board[6] == board[8] && board[6] != "")
+      return "gameOver";
+    if (board[0] == board[3] && board[0] == board[6] && board[0] != "")
+      return "gameOver";
+    if (board[1] == board[4] && board[1] == board[7] && board[1] != "")
+      return "gameOver";
+    if (board[2] == board[5] && board[8] == board[2] && board[2] != "")
+      return "gameOver";
+    if (board[0] == board[4] && board[0] == board[8] && board[0] != "")
+      return "gameOver";
+    if (board[2] == board[4] && board[2] == board[6] && board[2] != "")
+      return "gameOver";
+    let isCellAvaiable;
+    for (let i = 0; i < 9; i++) {
+      if (board[i] == "") isCellAvaiable = "yes";
+    }
+    if (isCellAvaiable != "yes") return "tie";
+  };
+  const cleanBoard = () => {
+    board = ["", "", "", "", "", "", "", "", ""];
+  };
+  return { cleanBoard, checkGameWinner, changeBoard };
 })();
-
+const boardDiv = document.querySelector(".board");
 const gameController = (() => {
   let playerMark;
   let computerMark;
@@ -26,8 +52,10 @@ const gameController = (() => {
     if (gameBoard.changeBoard(numberOfCell, playerMark) == "validTurn") {
       const markedCell = document.getElementById(numberOfCell);
       markedCell.textContent = playerMark;
-      console.log(playerMark, computerMark);
-      computerPlay();
+      if (gameBoard.checkGameWinner() != "gameOver") {
+        computerPlay();
+      } else winnerScreen("player");
+      if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
     }
   };
   const computerPlay = (/*difficulty*/) => {
@@ -40,6 +68,45 @@ const gameController = (() => {
     }
     const markedCell = document.getElementById(computerRandomChoice);
     markedCell.textContent = computerMark;
+    if (gameBoard.checkGameWinner() == "gameOver") winnerScreen("computer");
+  };
+  const winnerMessage = document.querySelector("#playerWinsMessage");
+  const losserMessage = document.querySelector("#computerWinsMessage");
+  const tieMessage = document.querySelector("#tieMessage");
+  const winnerScreen = (winner) => {
+    boardDiv.classList.add("unclickable");
+    if (winner == "player") winnerMessage.classList.remove("off");
+    if (winner == "computer") losserMessage.classList.remove("off");
+    if (winner == "tie") tieMessage.classList.remove("off");
+    newGame(winner);
+  };
+  const newGame = (winner) => {
+    const playAgainButton = document.querySelector("#playAgain");
+    playAgainButton.classList.remove("off");
+    playAgainButton.addEventListener("click", () => {
+      if (winner == "player") winnerMessage.classList.add("off");
+      if (winner == "computer") losserMessage.classList.add("off");
+      else tieMessage.classList.add("off");
+      playAgainButton.classList.add("off");
+      gameBoard.cleanBoard();
+      for (let i = 0; i < 9; i++) {
+        const boardCellButton = document.getElementById(i);
+        boardCellButton.textContent = "";
+      }
+      const startGameButton = document.querySelector("#startGame");
+      startGameButton.classList.remove("off");
+      startGameButton.addEventListener("click", () => {
+        gameController.startGame(
+          document
+            .querySelector('input[type="radio"]:checked')
+            .getAttribute("value")
+        );
+        startGameButton.classList.add("off");
+        optionButtons.classList.add("off");
+        boardDiv.classList.remove("unclickable");
+      });
+      optionButtons.classList.remove("off");
+    });
   };
   return { startGame, cellClicked };
 })();
@@ -47,13 +114,14 @@ const gameController = (() => {
 const newGameButton = document.querySelector("#newGame");
 newGameButton.addEventListener("click", () => {
   screenCreator();
-  const playerMark = document
+  let playerMark = document
     .querySelector('input[type="radio"]:checked')
     .getAttribute("value");
   gameController.startGame(playerMark);
+  newGameButton.classList.add("off");
 });
+const optionButtons = document.querySelector(".buttons");
 function screenCreator() {
-  const boardDiv = document.querySelector(".board");
   for (let i = 0; i < 9; i++) {
     const boardCellButton = document.createElement("button");
     boardCellButton.setAttribute("id", i);
@@ -63,6 +131,5 @@ function screenCreator() {
     });
     boardDiv.appendChild(boardCellButton);
   }
-  const optionButtons = document.querySelector(".buttons");
   optionButtons.classList.add("off");
 }

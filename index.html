@@ -10,12 +10,19 @@
   </head>
   <body>
     <div class="board"></div>
+    <button id="newGame">New Game</button>
+    <button id="startGame" class="off">Start Game</button>
     <div class="buttons">
-      <button id="newGame">New Game</button>
       <input type="radio" name="playerMarker" checked id="playAsX" value="x" />
       <label for="playAsX">Play as x</label>
       <input type="radio" name="playerMarker" id="playAsO" value="o" />
       <label for="playAsO">Play as o</label>
+    </div>
+    <div>
+      <p class="off" id="playerWinsMessage">Congratulations! You won</p>
+      <p class="off" id="tieMessage">Its a tie!</p>
+      <p class="off" id="computerWinsMessage">Bad luck! Computer wins</p>
+      <button id="playAgain" class="off">play again?</button>
     </div>
   </body>
 </html>
