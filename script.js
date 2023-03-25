@@ -15,15 +15,31 @@ const gameBoard = (() => {
 })();
 
 const gameController = (() => {
-  let mark;
-  const startGame = (playerMark) => {
-    mark = playerMark;
+  let playerMark;
+  let computerMark;
+  const startGame = (playerMarkChoice) => {
+    playerMark = playerMarkChoice;
+    if (playerMark == "x") computerMark = "o";
+    else computerMark = "x";
   };
   const cellClicked = (numberOfCell) => {
-    if (gameBoard.changeBoard(numberOfCell, mark) == "validTurn") {
+    if (gameBoard.changeBoard(numberOfCell, playerMark) == "validTurn") {
       const markedCell = document.getElementById(numberOfCell);
-      markedCell.textContent = mark;
+      markedCell.textContent = playerMark;
+      console.log(playerMark, computerMark);
+      computerPlay();
     }
+  };
+  const computerPlay = (/*difficulty*/) => {
+    for (let i = 0; i < 100; i++) {
+      computerRandomChoice = Math.floor(Math.random() * 9);
+      if (
+        gameBoard.changeBoard(computerRandomChoice, computerMark) !== "occupied"
+      )
+        break;
+    }
+    const markedCell = document.getElementById(computerRandomChoice);
+    markedCell.textContent = computerMark;
   };
   return { startGame, cellClicked };
 })();
