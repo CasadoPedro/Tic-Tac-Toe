@@ -15,15 +15,26 @@ const gameBoard = (() => {
 })();
 
 const gameController = (() => {
-  let mark = "x";
-  const cellClicked = (numberOfCell) =>
-    gameBoard.changeBoard(numberOfCell, mark);
-  return { cellClicked };
+  let mark;
+  const startGame = (playerMark) => {
+    mark = playerMark;
+  };
+  const cellClicked = (numberOfCell) => {
+    if (gameBoard.changeBoard(numberOfCell, mark) == "validTurn") {
+      const markedCell = document.getElementById(numberOfCell);
+      markedCell.textContent = mark;
+    }
+  };
+  return { startGame, cellClicked };
 })();
 
 const newGameButton = document.querySelector("#newGame");
 newGameButton.addEventListener("click", () => {
   screenCreator();
+  const playerMark = document
+    .querySelector('input[type="radio"]:checked')
+    .getAttribute("value");
+  gameController.startGame(playerMark);
 });
 function screenCreator() {
   const boardDiv = document.querySelector(".board");
@@ -36,5 +47,6 @@ function screenCreator() {
     });
     boardDiv.appendChild(boardCellButton);
   }
-  newGameButton.classList.add("off");
+  const optionButtons = document.querySelector(".buttons");
+  optionButtons.classList.add("off");
 }
