@@ -1,7 +1,7 @@
 const gameBoard = (() => {
   let board = ["", "", "", "", "", "", "", "", ""];
   const checkAvaiableCell = (numberOfCell) => {
-    if (board[numberOfCell] === "") return "avaiable";
+    if (board[numberOfCell] == "") return "avaiable";
     else return "unavaiable";
   };
   const changeBoard = (cellChosen, mark) => {
@@ -39,6 +39,7 @@ const gameBoard = (() => {
   };
   return { cleanBoard, checkGameWinner, changeBoard };
 })();
+let listenerAdded = false;
 const boardDiv = document.querySelector(".board");
 const gameController = (() => {
   let playerMark;
@@ -46,7 +47,10 @@ const gameController = (() => {
   const startGame = (playerMarkChoice) => {
     playerMark = playerMarkChoice;
     if (playerMark == "x") computerMark = "o";
-    else computerMark = "x";
+    if (playerMark == "o") {
+      computerMark = "x";
+      computerPlay();
+    }
   };
   const cellClicked = (numberOfCell) => {
     if (gameBoard.changeBoard(numberOfCell, playerMark) == "validTurn") {
@@ -95,16 +99,19 @@ const gameController = (() => {
       }
       const startGameButton = document.querySelector("#startGame");
       startGameButton.classList.remove("off");
-      startGameButton.addEventListener("click", () => {
-        gameController.startGame(
-          document
-            .querySelector('input[type="radio"]:checked')
-            .getAttribute("value")
-        );
-        startGameButton.classList.add("off");
-        optionButtons.classList.add("off");
-        boardDiv.classList.remove("unclickable");
-      });
+      if (!listenerAdded) {
+        startGameButton.addEventListener("click", () => {
+          gameController.startGame(
+            document
+              .querySelector('input[type="radio"]:checked')
+              .getAttribute("value")
+          );
+          startGameButton.classList.add("off");
+          optionButtons.classList.add("off");
+          boardDiv.classList.remove("unclickable");
+        });
+        listenerAdded = true;
+      }
       optionButtons.classList.remove("off");
     });
   };
