@@ -39,7 +39,6 @@ const gameBoard = (() => {
   };
   return { cleanBoard, checkGameWinner, changeBoard };
 })();
-let listenerAdded = false;
 const boardDiv = document.querySelector(".board");
 const gameController = (() => {
   let playerMark;
@@ -63,16 +62,22 @@ const gameController = (() => {
     }
   };
   const computerPlay = (/*difficulty*/) => {
-    for (let i = 0; i < 100; i++) {
-      computerRandomChoice = Math.floor(Math.random() * 9);
-      if (
-        gameBoard.changeBoard(computerRandomChoice, computerMark) !== "occupied"
-      )
-        break;
-    }
-    const markedCell = document.getElementById(computerRandomChoice);
-    markedCell.textContent = computerMark;
-    if (gameBoard.checkGameWinner() == "gameOver") winnerScreen("computer");
+    boardDiv.classList.add("unclickable");
+    setTimeout(() => {
+      for (let i = 0; i < 100; i++) {
+        computerRandomChoice = Math.floor(Math.random() * 9);
+        if (
+          gameBoard.changeBoard(computerRandomChoice, computerMark) !==
+          "occupied"
+        )
+          break;
+      }
+      const markedCell = document.getElementById(computerRandomChoice);
+      markedCell.textContent = computerMark;
+      boardDiv.classList.remove("unclickable");
+      if (gameBoard.checkGameWinner() == "gameOver") winnerScreen("computer");
+      if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
+    }, 1000);
   };
   const winnerMessage = document.querySelector("#playerWinsMessage");
   const losserMessage = document.querySelector("#computerWinsMessage");
@@ -84,6 +89,18 @@ const gameController = (() => {
     if (winner == "tie") tieMessage.classList.remove("off");
     newGame(winner);
   };
+  const startGameButton = document.querySelector("#startGame");
+  const startGameFunction = () => {
+    let playerMarker = document
+      .querySelector('input[type="radio"][name="playerMarker"]:checked')
+      .getAttribute("value");
+    console.log(playerMarker);
+    gameController.startGame(playerMarker);
+    if (playerMarker == "x") boardDiv.classList.remove("unclickable");
+    startGameButton.classList.add("off");
+    optionButtons.classList.add("off");
+  };
+  startGameButton.addEventListener("click", startGameFunction);
   const newGame = (winner) => {
     const playAgainButton = document.querySelector("#playAgain");
     playAgainButton.classList.remove("off");
@@ -97,21 +114,7 @@ const gameController = (() => {
         const boardCellButton = document.getElementById(i);
         boardCellButton.textContent = "";
       }
-      const startGameButton = document.querySelector("#startGame");
       startGameButton.classList.remove("off");
-      if (!listenerAdded) {
-        startGameButton.addEventListener("click", () => {
-          gameController.startGame(
-            document
-              .querySelector('input[type="radio"]:checked')
-              .getAttribute("value")
-          );
-          startGameButton.classList.add("off");
-          optionButtons.classList.add("off");
-          boardDiv.classList.remove("unclickable");
-        });
-        listenerAdded = true;
-      }
       optionButtons.classList.remove("off");
     });
   };
@@ -122,7 +125,7 @@ const newGameButton = document.querySelector("#newGame");
 newGameButton.addEventListener("click", () => {
   screenCreator();
   let playerMark = document
-    .querySelector('input[type="radio"]:checked')
+    .querySelector('input[type="radio"][name="playerMarker"]:checked')
     .getAttribute("value");
   gameController.startGame(playerMark);
   newGameButton.classList.add("off");
