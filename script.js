@@ -59,9 +59,8 @@ const gameController = (() => {
     if (gameBoard.changeBoard(numberOfCell, playerMark) == "validTurn") {
       const markedCell = document.getElementById(numberOfCell);
       markedCell.textContent = playerMark;
-      if (gameBoard.checkGameWinner() != "gameOver") {
-        computerPlay(difficulty);
-      } else winnerScreen("player");
+      if (gameBoard.checkGameWinner() != "gameOver") computerPlay(difficulty);
+      else winnerScreen("player");
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
     }
   };
@@ -111,13 +110,12 @@ const gameController = (() => {
     function winOrBlock() {
       let actualBoard = gameBoard.getBoard();
       let nextMove = checkPossibleWinMove(actualBoard, computerMark);
+      if (nextMove == null) return null;
       gameBoard.changeBoard(nextMove[0], computerMark);
       playMove(nextMove[0]);
     }
     setTimeout(() => {
-      if (difficulty == "easy") {
-        randomMove();
-      }
+      if (difficulty == "easy") randomMove();
       if (difficulty == "hard") {
         let actualBoard = gameBoard.getBoard();
         let nextMove = checkPossibleWinMove(actualBoard, computerMark);
@@ -127,80 +125,130 @@ const gameController = (() => {
         } else randomMove();
       }
       if (difficulty == "impossible") {
-        //PLAY A CORNER
         const cornerValues = [0, 2, 6, 8];
-        if (computerMark == "x" && turn == 0) {
-          const randomNumber = Math.floor(Math.random() * 4);
-          const randomCorner = cornerValues[randomNumber];
-          gameBoard.changeBoard(randomCorner, computerMark);
-          playMove(randomCorner);
-        }
-        if (turn == 1) {
-          //IF CORNER TAKEN, TAKE ANOTHER CORNER
-          let boardState = gameBoard.getBoard();
-          if (
-            (boardState[0] != "" && boardState[0] != computerMark) ||
-            (boardState[2] != "" && boardState[2] != computerMark) ||
-            (boardState[6] != "" && boardState[6] != computerMark) ||
-            (boardState[8] != "" && boardState[8] != computerMark)
-          ) {
-            for (let corner of cornerValues) {
-              if (gameBoard.changeBoard(corner, computerMark) != "occupied") {
-                playMove(corner);
-                break;
-              }
-            }
-          } else if (boardState[4] != "") {
-            //IF CENTER IS TAKEN, TAKE OPPOSITE CORNER
-            if (boardState[0] == "x") {
-              gameBoard.changeBoard(8, computerMark);
-              playMove(8);
-            } else if (boardState[2] == "x") {
-              gameBoard.changeBoard(6, computerMark);
-              playMove(6);
-            } else if (boardState[6] == "x") {
-              gameBoard.changeBoard(2, computerMark);
-              playMove(2);
-            } else if (boardState[8] == "x") {
-              gameBoard.changeBoard(0, computerMark);
-              playMove(0);
-            }
-          } else {
-            for (let [a, b, c] of winningCombinations)
-              if (
-                boardState[a] == computerMark &&
-                boardState[b] == "" &&
-                boardState[c] == ""
-              ) {
-                gameBoard.changeBoard(c, computerMark);
-                playMove(c);
-                break;
-              } else if (
-                boardState[c] == computerMark &&
-                boardState[b] == "" &&
-                boardState[a] == ""
-              ) {
-                gameBoard.changeBoard(a, computerMark);
-                playMove(a);
-                break;
-              }
-            playMiddle = true;
+        if (computerMark == "x") {
+          if (turn == 0) {
+            const randomNumber = Math.floor(Math.random() * 4);
+            const randomCorner = cornerValues[randomNumber];
+            gameBoard.changeBoard(randomCorner, computerMark);
+            playMove(randomCorner);
           }
+          if (turn == 1) {
+            let boardState = gameBoard.getBoard();
+            if (
+              (boardState[0] != "" && boardState[0] != computerMark) ||
+              (boardState[2] != "" && boardState[2] != computerMark) ||
+              (boardState[6] != "" && boardState[6] != computerMark) ||
+              (boardState[8] != "" && boardState[8] != computerMark)
+            ) {
+              for (let corner of cornerValues) {
+                if (gameBoard.changeBoard(corner, computerMark) != "occupied") {
+                  playMove(corner);
+                  break;
+                }
+              }
+            } else if (boardState[4] != "") {
+              if (boardState[0] == "x") {
+                gameBoard.changeBoard(8, computerMark);
+                playMove(8);
+              } else if (boardState[2] == "x") {
+                gameBoard.changeBoard(6, computerMark);
+                playMove(6);
+              } else if (boardState[6] == "x") {
+                gameBoard.changeBoard(2, computerMark);
+                playMove(2);
+              } else if (boardState[8] == "x") {
+                gameBoard.changeBoard(0, computerMark);
+                playMove(0);
+              }
+            } else {
+              for (let [a, b, c] of winningCombinations)
+                if (
+                  boardState[a] == computerMark &&
+                  boardState[b] == "" &&
+                  boardState[c] == ""
+                ) {
+                  gameBoard.changeBoard(c, computerMark);
+                  playMove(c);
+                  break;
+                } else if (
+                  boardState[c] == computerMark &&
+                  boardState[b] == "" &&
+                  boardState[a] == ""
+                ) {
+                  gameBoard.changeBoard(a, computerMark);
+                  playMove(a);
+                  break;
+                }
+              playMiddle = true;
+            }
+          }
+          if (turn == 2) {
+            if (playMiddle == true && gameBoard.getBoard()[4] == "") {
+              gameBoard.changeBoard(4, computerMark);
+              playMove(4);
+            } else winOrBlock();
+          }
+          if (turn == 3) {
+            winOrBlock();
+          }
+          if (turn == 4) {
+            winOrBlock();
+          }
+          turn++;
         }
-        if (turn == 2) {
-          if (playMiddle == true && gameBoard.getBoard()[4] == "") {
-            gameBoard.changeBoard(4, computerMark);
-            playMove(4);
-          } else winOrBlock();
-        }
-        if (turn == 3) {
-          winOrBlock();
-        }
-        if (turn == 4) {
-          winOrBlock();
+        if (computerMark == "o") {
+          if (turn == 0) {
+            let boardState = gameBoard.getBoard();
+            if (boardState[4] !== "") {
+              const randomCorner = cornerValues[Math.floor(Math.random() * 4)];
+              gameBoard.changeBoard(randomCorner, computerMark);
+              playMove(randomCorner);
+            } else {
+              gameBoard.changeBoard(4, computerMark);
+              playMove(4);
+            }
+          }
+          if (turn == 1) {
+            let boardState = gameBoard.getBoard();
+            if (
+              (boardState[0] == playerMark && boardState[8] == playerMark) ||
+              (boardState[2] == playerMark && boardState[6] == playerMark)
+            ) {
+              let sidesPositions = [1, 3, 5, 7];
+              const randomSide = sidesPositions[Math.floor(Math.random() * 4)];
+              gameBoard.changeBoard(randomSide, computerMark);
+              playMove(randomSide);
+            } else {
+              let cornerplay = false;
+              let cornerCombinations = [
+                [0, 1, 3],
+                [2, 1, 5],
+                [6, 3, 7],
+                [8, 5, 7],
+              ];
+              for (let combination of cornerCombinations) {
+                if (
+                  boardState[combination[1]] == playerMark &&
+                  boardState[combination[2]] == playerMark
+                ) {
+                  gameBoard.changeBoard(combination[0], computerMark);
+                  playMove(combination[0]);
+                  cornerplay = true;
+                }
+              }
+              if (cornerplay == false && winOrBlock() === null) randomMove();
+            }
+          }
+          if (turn == 2) {
+            if (winOrBlock() === null) randomMove();
+          }
+          if (turn == 3) {
+            if (winOrBlock() === null) randomMove();
+          }
+          turn++;
         }
       }
-      turn++;
     }, 1000);
   };
   const winnerMessage = document.querySelector("#playerWinsMessage");
