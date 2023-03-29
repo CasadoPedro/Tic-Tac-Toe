@@ -16,7 +16,6 @@
       <input
         type="radio"
         name="difficultySelector"
-        checked
         id="easyDifficulty"
         value="easy"
       />
@@ -24,20 +23,21 @@
       ><input
         type="radio"
         name="difficultySelector"
-        id="mediumDifficulty"
-        value="medium"
-      />
-      <label for="mediumDifficulty">Medium</label>
-      <input
-        type="radio"
-        name="difficultySelector"
         id="hardDifficulty"
         value="hard"
       />
       <label for="hardDifficulty">Hard</label>
-      <input type="radio" name="playerMarker" checked id="playAsX" value="x" />
+      <input
+        type="radio"
+        name="difficultySelector"
+        id="impossibleDifficulty"
+        checked
+        value="impossible"
+      />
+      <label for="impossibleDifficulty">Impossible</label>
+      <input type="radio" name="playerMarker" id="playAsX" value="x" />
       <label for="playAsX">Play as x(start first)</label>
-      <input type="radio" name="playerMarker" id="playAsO" value="o" />
+      <input type="radio" name="playerMarker" checked id="playAsO" value="o" />
       <label for="playAsO">Play as o(start second)</label>
     </div>
     <div>
