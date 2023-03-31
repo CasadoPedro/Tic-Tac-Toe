@@ -64,7 +64,8 @@ const gameController = (() => {
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
     }
   };
-  const checkPossibleWinMove = (board, mark) => {
+  const checkPossibleWinMove = (mark) => {
+    let board = gameBoard.getBoard();
     let winningMoves = [];
     for (let pattern of winningCombinations) {
       const [a, b, c] = pattern;
@@ -97,19 +98,46 @@ const gameController = (() => {
     }
     boardDiv.classList.add("unclickable");
     function randomMove() {
-      for (let i = 0; i < 100; i++) {
-        computerRandomChoice = Math.floor(Math.random() * 9);
+      let board = gameBoard.getBoard();
+      let playRandom = true;
+      outerloop: for (let combination of winningCombinations) {
+        const [a, b, c] = combination;
         if (
-          gameBoard.changeBoard(computerRandomChoice, computerMark) !==
-          "occupied"
-        )
-          break;
+          (board[a] == computerMark &&
+            board[b] != playerMark &&
+            board[c] != playerMark) ||
+          (board[a] != playerMark &&
+            board[b] == computerMark &&
+            board[c] != playerMark) ||
+          (board[a] != playerMark &&
+            board[b] != playerMark &&
+            board[c] == computerMark)
+        ) {
+          for (let i = 0; i < 3; i++) {
+            if (
+              gameBoard.changeBoard(combination[i], computerMark) != "occupied"
+            ) {
+              playMove(combination[i]);
+              playRandom = false;
+              break outerloop;
+            }
+          }
+        }
       }
-      playMove(computerRandomChoice);
+      if (playRandom == true) {
+        for (let i = 0; i < 100; i++) {
+          computerRandomChoice = Math.floor(Math.random() * 9);
+          if (
+            gameBoard.changeBoard(computerRandomChoice, computerMark) !==
+            "occupied"
+          )
+            break;
+        }
+        playMove(computerRandomChoice);
+      }
     }
     function winOrBlock() {
-      let actualBoard = gameBoard.getBoard();
-      let nextMove = checkPossibleWinMove(actualBoard, computerMark);
+      let nextMove = checkPossibleWinMove(computerMark);
       if (nextMove == null) return null;
       gameBoard.changeBoard(nextMove[0], computerMark);
       playMove(nextMove[0]);
@@ -117,8 +145,7 @@ const gameController = (() => {
     setTimeout(() => {
       if (difficulty == "easy") randomMove();
       if (difficulty == "hard") {
-        let actualBoard = gameBoard.getBoard();
-        let nextMove = checkPossibleWinMove(actualBoard, computerMark);
+        let nextMove = checkPossibleWinMove(computerMark);
         if (nextMove != null) {
           gameBoard.changeBoard(nextMove[0], computerMark);
           playMove(nextMove[0]);
