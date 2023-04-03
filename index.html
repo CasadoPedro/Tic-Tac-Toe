@@ -9,42 +9,51 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <div class="board"></div>
-    <button id="newGame">New Game</button>
-    <button id="startGame" class="off">Start Game</button>
-    <div class="buttons">
-      <input
-        type="radio"
-        name="difficultySelector"
-        id="easyDifficulty"
-        value="easy"
-      />
-      <label for="easyDifficulty">Easy</label
-      ><input
-        type="radio"
-        name="difficultySelector"
-        id="hardDifficulty"
-        value="hard"
-      />
-      <label for="hardDifficulty">Hard</label>
-      <input
-        type="radio"
-        name="difficultySelector"
-        id="impossibleDifficulty"
-        checked
-        value="impossible"
-      />
-      <label for="impossibleDifficulty">Impossible</label>
-      <input type="radio" name="playerMarker" id="playAsX" value="x" />
-      <label for="playAsX">Play as x(start first)</label>
-      <input type="radio" name="playerMarker" checked id="playAsO" value="o" />
-      <label for="playAsO">Play as o(start second)</label>
+    <div class="header">
+      <h1>Tic-Tac-Toe</h1>
     </div>
-    <div>
-      <p class="off" id="playerWinsMessage">Congratulations! You won</p>
-      <p class="off" id="tieMessage">Its a tie!</p>
-      <p class="off" id="computerWinsMessage">Bad luck! Computer wins</p>
-      <button id="playAgain" class="off">play again?</button>
+    <div class="content">
+      <div class="board"></div>
+      <div class="buttons">
+        <div class="gameOptions">
+          <div class="difficulty">
+            <label for="difficultySelector">Difficulty:</label>
+            <select name="difficultySelector" id="difficultySelector">
+              <option value="easy">Easy</option>
+              <option value="hard">Hard</option>
+              <option value="impossible">Impossible</option>
+            </select>
+          </div>
+          <div>
+            <input
+              type="radio"
+              name="playerMarker"
+              checked
+              id="playAsX"
+              value="X"
+            />
+            <label for="playAsX">Play first</label>
+          </div>
+          <div>
+            <input type="radio" name="playerMarker" id="playAsO" value="O" />
+            <label for="playAsO">Play second</label>
+          </div>
+        </div>
+        <button id="newGame" class="gameButtons">New Game</button>
+        <button id="startGame" class="gameButtons off">Start Game</button>
+      </div>
+      <div class="gameEnd off">
+        <p class="off" id="playerWinsMessage">Congratulations! You win</p>
+        <p class="off" id="tieMessage">Its a tie! No winners.</p>
+        <p class="off" id="computerWinsMessage">Bad luck! Computer wins</p>
+        <button id="playAgain" class="gameButtons off">Play again</button>
+      </div>
+    </div>
+    <div class="footer">
+      <h3>Copyright © 2023 CasadoPedro</h3>
+      <a href="https://github.com/CasadoPedro" target="_blank">
+        <img src="./images/github.png" alt="github icon" />
+      </a>
     </div>
   </body>
 </html>

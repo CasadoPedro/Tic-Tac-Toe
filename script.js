@@ -49,9 +49,9 @@ const gameController = (() => {
   const startGame = (playerMarkChoice, gameDifficulty) => {
     playerMark = playerMarkChoice;
     difficulty = gameDifficulty;
-    if (playerMark == "x") computerMark = "o";
-    if (playerMark == "o") {
-      computerMark = "x";
+    if (playerMark == "X") computerMark = "O";
+    if (playerMark == "O") {
+      computerMark = "X";
       computerPlay(difficulty);
     }
   };
@@ -59,6 +59,7 @@ const gameController = (() => {
     if (gameBoard.changeBoard(numberOfCell, playerMark) == "validTurn") {
       const markedCell = document.getElementById(numberOfCell);
       markedCell.textContent = playerMark;
+      markedCell.style.color = "#000000";
       if (gameBoard.checkGameWinner() != "gameOver") computerPlay(difficulty);
       else winnerScreen("player");
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
@@ -92,6 +93,7 @@ const gameController = (() => {
     function playMove(move) {
       const markedCell = document.getElementById(move);
       markedCell.textContent = computerMark;
+      markedCell.style.color = "#000000";
       boardDiv.classList.remove("unclickable");
       if (gameBoard.checkGameWinner() == "gameOver") winnerScreen("computer");
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
@@ -153,7 +155,7 @@ const gameController = (() => {
       }
       if (difficulty == "impossible") {
         const cornerValues = [0, 2, 6, 8];
-        if (computerMark == "x") {
+        if (computerMark == "X") {
           if (turn == 0) {
             const randomNumber = Math.floor(Math.random() * 4);
             const randomCorner = cornerValues[randomNumber];
@@ -175,16 +177,16 @@ const gameController = (() => {
                 }
               }
             } else if (boardState[4] != "") {
-              if (boardState[0] == "x") {
+              if (boardState[0] == "X") {
                 gameBoard.changeBoard(8, computerMark);
                 playMove(8);
-              } else if (boardState[2] == "x") {
+              } else if (boardState[2] == "X") {
                 gameBoard.changeBoard(6, computerMark);
                 playMove(6);
-              } else if (boardState[6] == "x") {
+              } else if (boardState[6] == "X") {
                 gameBoard.changeBoard(2, computerMark);
                 playMove(2);
-              } else if (boardState[8] == "x") {
+              } else if (boardState[8] == "X") {
                 gameBoard.changeBoard(0, computerMark);
                 playMove(0);
               }
@@ -224,7 +226,7 @@ const gameController = (() => {
           }
           turn++;
         }
-        if (computerMark == "o") {
+        if (computerMark == "O") {
           if (turn == 0) {
             let boardState = gameBoard.getBoard();
             if (boardState[4] !== "") {
@@ -278,15 +280,19 @@ const gameController = (() => {
       }
     }, 1000);
   };
+  const winnerDiv = document.querySelector(".gameEnd");
   const winnerMessage = document.querySelector("#playerWinsMessage");
   const losserMessage = document.querySelector("#computerWinsMessage");
   const tieMessage = document.querySelector("#tieMessage");
   const winnerScreen = (winner) => {
-    boardDiv.classList.add("unclickable");
-    if (winner == "player") winnerMessage.classList.remove("off");
-    if (winner == "computer") losserMessage.classList.remove("off");
-    if (winner == "tie") tieMessage.classList.remove("off");
-    newGame(winner);
+    setTimeout(() => {
+      boardDiv.classList.add("unclickable");
+      winnerDiv.classList.remove("off");
+      if (winner == "player") winnerMessage.classList.remove("off");
+      if (winner == "computer") losserMessage.classList.remove("off");
+      if (winner == "tie") tieMessage.classList.remove("off");
+      newGame(winner);
+    }, 1000);
   };
   const startGameButton = document.querySelector("#startGame");
   const startGameFunction = () => {
@@ -295,11 +301,10 @@ const gameController = (() => {
     let playerMarker = document
       .querySelector('input[type="radio"][name="playerMarker"]:checked')
       .getAttribute("value");
-    let gameDifficulty = document
-      .querySelector('input[type="radio"][name="difficultySelector"]:checked')
-      .getAttribute("value");
+    let gameDifficulty = document.querySelector("#difficultySelector").value;
+
     gameController.startGame(playerMarker, gameDifficulty);
-    if (playerMarker == "x") boardDiv.classList.remove("unclickable");
+    if (playerMarker == "X") boardDiv.classList.remove("unclickable");
     startGameButton.classList.add("off");
     optionButtons.classList.add("off");
   };
@@ -312,6 +317,7 @@ const gameController = (() => {
       if (winner == "computer") losserMessage.classList.add("off");
       else tieMessage.classList.add("off");
       playAgainButton.classList.add("off");
+      winnerDiv.classList.add("off");
       gameBoard.cleanBoard();
       for (let i = 0; i < 9; i++) {
         const boardCellButton = document.getElementById(i);
@@ -326,13 +332,13 @@ const gameController = (() => {
 
 const newGameButton = document.querySelector("#newGame");
 newGameButton.addEventListener("click", () => {
-  screenCreator();
+  optionButtons.classList.add("off");
+  boardDiv.classList.remove("unclickable");
   let playerMark = document
     .querySelector('input[type="radio"][name="playerMarker"]:checked')
     .getAttribute("value");
-  let gameDifficulty = document
-    .querySelector('input[type="radio"][name="difficultySelector"]:checked')
-    .getAttribute("value");
+  let gameDifficulty = document.querySelector("#difficultySelector").value;
+
   gameController.startGame(playerMark, gameDifficulty);
   newGameButton.classList.add("off");
 });
@@ -346,6 +352,7 @@ function screenCreator() {
       gameController.cellClicked(boardCellButton.getAttribute("id"));
     });
     boardDiv.appendChild(boardCellButton);
+    boardDiv.classList.add("unclickable");
   }
-  optionButtons.classList.add("off");
 }
+screenCreator();

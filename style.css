@@ -3,24 +3,154 @@
   padding: 0;
 }
 body {
-  display: flex;
-  justify-content: center;
+  color: white;
+  font-family: "Helvetica", "Arial", sans-serif;
+  background-color: black;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
   align-items: center;
+  justify-items: center;
+  min-height: 100vh;
+  margin: 0 auto;
+  font-weight: bold;
+}
+.content {
+  min-width: 500px;
+  position: relative;
 }
 .board {
+  grid-row: 2;
+  padding: 20px;
   display: grid;
   height: 500px;
   width: 500px;
   grid-template-columns: repeat(3, 1fr);
   grid-template-rows: repeat(3, 1fr);
-  border: 1px solid black;
-  gap: 2px;
+  gap: 12px;
   padding: 2px;
-  background-color: yellow;
+  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.3);
 }
+.buttons {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  position: absolute;
+  background-color: rgb(11, 55, 197);
+  border: black 3px solid;
+  opacity: 0.9;
+  padding: 15px;
+  border-radius: 8px;
+  left: 7%;
+  top: 37%;
+  min-width: 400px;
+}
+.gameEnd {
+  position: absolute;
+  background-color: rgb(11, 55, 197);
+  border: black 3px solid;
+  opacity: 0.9;
+  padding: 15px;
+  border-radius: 8px;
+  left: 28%;
+  top: 40%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.gameOptions {
+  display: flex;
+  gap: 25px;
+}
+.gameButtons {
+  width: 100px;
+  background-color: white;
+  border: black 1px solid;
+  color: black;
+  padding: 10px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  margin: 4px 2px;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+.gameButtons:hover {
+  box-shadow: 0px 8px 0px rgba(0, 0, 0, 0.2);
+  transform: translateY(-3px);
+}
+
+.gameButtons:active {
+  box-shadow: none;
+  transform: translateY(3px);
+}
+
 .off {
   display: none;
 }
 .unclickable {
   pointer-events: none;
+}
+.header {
+  grid-row: 1;
+  padding: 10px;
+}
+.footer {
+  grid-row: 3;
+  padding: 3px;
+  display: flex;
+  box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.3);
+  margin-bottom: 5px;
+}
+select {
+  background-color: #f1f1f1;
+  border: none;
+  color: #333;
+  padding: 2px;
+  width: 80px;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  border-radius: 5px;
+  text-align: center;
+}
+select:hover,
+select:focus {
+  outline: none;
+}
+input[type="radio"] {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  border: 1px solid #ccc;
+}
+.cell {
+  font-size: 100px;
+  font-weight: 300;
+  color: white;
+  transition: color 0.4s linear;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+img {
+  height: 30px;
+}
+h3 {
+  line-height: 1.7;
+  height: 30px;
+  text-shadow: 1px 1px 3px rgba(255, 255, 255, 0.5);
+}
+h1 {
+  font-family: "Montserrat", sans-serif;
+  font-size: 3em;
+  color: #fff;
+  text-align: center;
+  background-color: #000;
+  padding: 0.5em;
+  text-shadow: 3px 3px 3px rgba(255, 255, 255, 0.5);
+  box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5);
 }
