@@ -1,5 +1,5 @@
 <h1>TIC TAC TOE GAME</h1>
-</h3>This is a <em>Tic Tac Toe</em> game built with JavaScript, HTML, and CSS. </h3>
+<h3>This is a <em>Tic Tac Toe</em> game built with JavaScript, HTML, and CSS. </h3>
 
 The game allows the user to play against a computer opponent with adjustable difficulty settings. The game board is rendered in HTML, and JavaScript is used to handle the game logic and update the board as moves are made. The CSS file provides styling for the game board and game screen.
 
