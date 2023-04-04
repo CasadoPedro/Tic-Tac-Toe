@@ -17,7 +17,7 @@ const gameBoard = (() => {
     for (let combination of winningCombinations) {
       const [a, b, c] = combination;
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        return "gameOver";
+        return combination;
       }
     }
     let isCellAvaiable;
@@ -60,9 +60,10 @@ const gameController = (() => {
       const markedCell = document.getElementById(numberOfCell);
       markedCell.textContent = playerMark;
       markedCell.style.color = "#000000";
-      if (gameBoard.checkGameWinner() != "gameOver") computerPlay(difficulty);
-      else winnerScreen("player");
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
+      else if (Array.isArray(gameBoard.checkGameWinner()) == true) {
+        winnerScreen("player", gameBoard.checkGameWinner());
+      } else computerPlay(difficulty);
     }
   };
   const checkPossibleWinMove = (mark) => {
@@ -95,7 +96,9 @@ const gameController = (() => {
       markedCell.textContent = computerMark;
       markedCell.style.color = "#000000";
       boardDiv.classList.remove("unclickable");
-      if (gameBoard.checkGameWinner() == "gameOver") winnerScreen("computer");
+      if (Array.isArray(gameBoard.checkGameWinner()) == true) {
+        winnerScreen("computer", gameBoard.checkGameWinner());
+      }
       if (gameBoard.checkGameWinner() == "tie") winnerScreen("tie");
     }
     boardDiv.classList.add("unclickable");
@@ -213,7 +216,11 @@ const gameController = (() => {
             }
           }
           if (turn == 2) {
-            if (playMiddle == true && gameBoard.getBoard()[4] == "") {
+            let possibleMove = checkPossibleWinMove(computerMark);
+            if (possibleMove != null) {
+              gameBoard.changeBoard(possibleMove[0], computerMark);
+              playMove(possibleMove[0]);
+            } else if (playMiddle == true && gameBoard.getBoard()[4] == "") {
               gameBoard.changeBoard(4, computerMark);
               playMove(4);
             } else winOrBlock();
@@ -284,9 +291,22 @@ const gameController = (() => {
   const winnerMessage = document.querySelector("#playerWinsMessage");
   const losserMessage = document.querySelector("#computerWinsMessage");
   const tieMessage = document.querySelector("#tieMessage");
-  const winnerScreen = (winner) => {
+  const winnerScreen = (winner, combination) => {
+    const cells = document.querySelectorAll(".cell");
+    if (combination != null) {
+      for (let cell of combination) {
+        if (winner == "computer") {
+          cells[cell].style.backgroundColor = "#d61b1b";
+          cells[cell].style.border = "1px solid #d61b1b";
+        }
+        if (winner == "player") {
+          cells[cell].style.backgroundColor = "#32db32";
+          cells[cell].style.border = "1px solid #32db32";
+        }
+      }
+    }
+    boardDiv.classList.add("unclickable");
     setTimeout(() => {
-      boardDiv.classList.add("unclickable");
       winnerDiv.classList.remove("off");
       if (winner == "player") winnerMessage.classList.remove("off");
       if (winner == "computer") losserMessage.classList.remove("off");
@@ -321,6 +341,8 @@ const gameController = (() => {
       gameBoard.cleanBoard();
       for (let i = 0; i < 9; i++) {
         const boardCellButton = document.getElementById(i);
+        boardCellButton.style.backgroundColor = "#ececec";
+        boardCellButton.style.border = "none";
         boardCellButton.textContent = "";
       }
       startGameButton.classList.remove("off");
